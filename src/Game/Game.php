@@ -3,10 +3,12 @@
 namespace BinaryStudioAcademy\Game;
 
 use BinaryStudioAcademy\Game\Commands\AbstractCommand;
-
-
+use BinaryStudioAcademy\Game\Commands\BuildCommand;
+use BinaryStudioAcademy\Game\Commands\CommandFactory;
 use BinaryStudioAcademy\Game\Commands\ExitCommand;
 use BinaryStudioAcademy\Game\Commands\HelpCommand;
+use BinaryStudioAcademy\Game\Commands\MineCommand;
+use BinaryStudioAcademy\Game\Commands\ProduceCommand;
 use BinaryStudioAcademy\Game\Commands\SchemeCommand;
 use BinaryStudioAcademy\Game\Commands\StatusCommand;
 use BinaryStudioAcademy\Game\Contracts\Io\Reader;
@@ -29,39 +31,56 @@ class Game
     public function start(Reader $reader, Writer $writer): void
     {
 
-//        $writer->write("Type your name:");
-//        $input = trim($reader->read());
-//        $writer->writeln("Good luck with this task, {$input}!");
-        $gameWorld = new GameWorld();
-        while (true) {
-            $writer->write("Type the command:");
+        $writer->write("Let's play the game!\n");
+        $gameWorld = GameWorld::getInstance();
+        $commandFactory = new CommandFactory($gameWorld, $writer);
+        //while we won't build all main modules of our spaceship
+        while ($gameWorld->getCountOfMainModules() > 0) {
+            $writer->write("\nType the command:");
             $command = trim($reader->read());
-            if ($command == 'help') {
-                $this->setCommand(new HelpCommand($writer));
+            try {
+                $command = $commandFactory->createCommand($command);
+                $this->setCommand($command);
                 $this->command->process();
-
+            } catch (\Exception $exception) {
+                $writer->write($exception->getMessage());
             }
-            if ($command == 'exit') {
-                $this->setCommand(new ExitCommand($writer));
-                $this->command->process();
-            }
-            if ($command == 'status') {
-                $this->setCommand(new StatusCommand($gameWorld, $writer));
-                $this->command->process();
-            }
-            if (preg_match('#^scheme:(?<spaceship_module>.+)#', $command, $matches)) {
-                $this->setCommand(new SchemeCommand($gameWorld, $writer,$matches['spaceship_module']));
-                $this->command->process();
-            }
-           // if(preg_match())
         }
+        $writer->write("You win!!!!");
         return;
     }
 
     public function run(Reader $reader, Writer $writer): void
     {
-        // TODO: Implement step by step mode with game state persistence between steps
-        $writer->writeln("You can't play yet. Please read input and convert it to commands.");
-        $writer->writeln("Don't forget to create game's world.");
+        $writer->write("Let's test the game!\n");
+        $gameWorld = GameWorld::getInstance();
+
+        $this->setCommand(new HelpCommand($writer));
+        $this->command->process();
+
+        $this->setCommand(new StatusCommand($gameWorld, $writer));
+        $this->command->process();
+
+        $this->setCommand(new SchemeCommand($gameWorld, $writer, "porthole"));
+        $this->command->process();
+
+        $this->setCommand(new MineCommand($gameWorld, $writer, "fuel"));
+        $this->command->process();
+
+        $this->setCommand(new ProduceCommand($gameWorld, $writer, "metal"));
+        $this->command->process();
+
+        $this->setCommand(new StatusCommand($gameWorld, $writer));
+        $this->command->process();
+
+        $this->setCommand(new BuildCommand($gameWorld, $writer, "shell"));
+        $this->command->process();
+
+        $this->setCommand(new StatusCommand($gameWorld, $writer));
+        $this->command->process();
+
+        $this->setCommand(new ExitCommand($writer));
+        $this->command->process();
+        return;
     }
 }

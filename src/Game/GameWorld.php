@@ -1,35 +1,47 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Serhii
- * Date: 06.07.2018
- * Time: 1:37
- */
 
 namespace BinaryStudioAcademy\Game;
 
-/*
- * TODO: do it as Singleton
- */
+
 class GameWorld
 {
+    private static $instance;
     private $availableResources = [];
     private $spaceshipDetails = [];
+    private $details = ['shell', 'porthole', 'control_unit', 'engine', 'launcher', 'tank', 'IC', 'wires'];
 
-    function __construct()
+    private $countOfMainModules = 6;
+
+    private function __construct()
     {
         //generate initial resources
         $this->generateResources();
         $this->feelSpaceshipDetails();
     }
 
+    private function __clone()
+    {
+    }
+
+    private function __wakeup()
+    {
+    }
+
+    public static function getInstance():GameWorld
+    {
+        if (self::$instance === null) {
+            self::$instance = new static();
+        }
+        return self::$instance;
+    }
+
     private function generateResources():void
     {
         //generate 20 random resources
-        $resources = ['metal', 'iron', 'fire', 'sand', 'iron', 'silicon', 'copper', 'carbon', 'water', 'fuel'];
+        $resources = ['iron', 'fire', 'sand', 'silicon', 'copper', 'carbon', 'water', 'fuel'];
         $minValue = 0;
         $maxValue = count($resources) - 1;
-        $count = 20;
+        $count = 200;
         $num = 0;
         while ($num < $count) {
             $value = random_int($minValue, $maxValue);
@@ -42,17 +54,25 @@ class GameWorld
             $this->availableResources[$resources[$value]]['count']++;
             $num++;
         }
-//        var_dump($this->availableResources);
         return;
     }
 
     private function feelSpaceshipDetails():void
     {
-        $details = ['shell', 'porthole', 'IC', 'wires', 'engine', 'launcher', 'tank'];
-        foreach ($details as $detail) {
-            $detailName = '\BinaryStudioAcademy\Game\Details\\' . ucfirst($detail);
+
+        foreach ($this->details as $detail) {
+            if ($detail == 'control_unit') {
+                //replace control_unit to ControlUnit
+                $detailParts = array_map(function (string $value) {
+                    return ucfirst($value);
+                }, preg_split('#_#', $detail));
+                $detailName = implode("", $detailParts);
+                $detailName = '\BinaryStudioAcademy\Game\Details\\' . ucfirst($detailName);
+            } else {
+                $detailName = '\BinaryStudioAcademy\Game\Details\\' . ucfirst($detail);
+            }
             $objDetail = new $detailName;
-           // array_push($this->spaceshipDetails, $objDetail);
+            // array_push($this->spaceshipDetails, $objDetail);
             $this->spaceshipDetails[$detail] = $objDetail;
         }
         return;
@@ -61,7 +81,7 @@ class GameWorld
     /**
      * @return array
      */
-    public function getAvailableResources(): array
+    public function &getAvailableResources(): array
     {
         return $this->availableResources;
     }
@@ -69,8 +89,32 @@ class GameWorld
     /**
      * @return array
      */
-    public function getSpaceshipDetails(): array
+    public function &getSpaceshipDetails(): array
     {
         return $this->spaceshipDetails;
+    }
+
+    /**
+     * @return array
+     */
+    public function getDetails(): array
+    {
+        return $this->details;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCountOfMainModules(): int
+    {
+        return $this->countOfMainModules;
+    }
+
+    /**
+     * @param int $countOfMainModules
+     */
+    public function setCountOfMainModules(int $countOfMainModules)
+    {
+        $this->countOfMainModules = $countOfMainModules;
     }
 }

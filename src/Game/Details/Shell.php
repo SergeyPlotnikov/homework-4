@@ -1,12 +1,11 @@
 <?php
-
 namespace BinaryStudioAcademy\Game\Details;
 
 class Shell extends Detail
 {
     public function __construct()
     {
-        $this->necessaryResources = ['Iron', 'Fire', 'Fire'];
+        $this->necessaryResources = ['metal', 'fire'];
         $this->title = 'shell';
     }
 

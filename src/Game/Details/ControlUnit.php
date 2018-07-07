@@ -1,15 +1,21 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Serhii
- * Date: 06.07.2018
- * Time: 1:47
- */
-
 namespace BinaryStudioAcademy\Game\Details;
 
-
-abstract class ControlUnit extends Detail
+class ControlUnit extends Detail
 {
+    private $setOfDetails = ['IC', 'wires'];
 
+    public function __construct()
+    {
+        $this->combineDetail = true;
+        $this->title = "control_unit";
+    }
+
+    /**
+     * @return array
+     */
+    public function getSetOfDetails(): array
+    {
+        return $this->setOfDetails;
+    }
 }

@@ -1,13 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Serhii
- * Date: 07.07.2018
- * Time: 2:03
- */
-
 namespace BinaryStudioAcademy\Game\Commands;
-
 
 use BinaryStudioAcademy\Game\Contracts\Io\Writer;
 use BinaryStudioAcademy\Game\Details\Detail;
@@ -18,7 +10,7 @@ class SchemeCommand extends AbstractCommand
     private $spaceshipModuleName;
     private $gameWorld;
 
-    private $spaceshipModules = ['shell', 'porthole', 'ic', 'wires', 'engine', 'launcher', 'tank'];
+    private $spaceshipModules = ['shell', 'porthole', 'ic', 'wires', 'engine', 'launcher', 'tank', 'control_unit'];
 
     public function __construct(GameWorld $gameWorld, Writer $writer, string $spaceshipModuleName)
     {
@@ -27,11 +19,12 @@ class SchemeCommand extends AbstractCommand
         $this->gameWorld = $gameWorld;
     }
 
-    private function checkModule()
+    private function checkModule():void
     {
         if (!in_array($this->spaceshipModuleName, $this->spaceshipModules)) {
             throw new \Exception("There is no such spaceship module.\n");
         }
+        return;
     }
 
     public function process():void
@@ -42,8 +35,14 @@ class SchemeCommand extends AbstractCommand
             /**
              * @var Detail $module
              */
-            $this->writer->write("Module name: " . $module->getTitle() . "\n");
-            $this->writer->write("Necessary details: " . implode(", ", $module->getNecessaryResources() . "\n"));
+            if (!$module->isCombineDetail()) {
+                $this->writer->write("Module name: " . $module->getTitle() . "\n");
+                $this->writer->write("Necessary resources: " . implode(", ", $module->getNecessaryResources()) . "\n");
+            } else {
+                $this->writer->write("Module name: " . $module->getTitle() . "\n");
+                $this->writer->write("It's a combined module.\n");
+                $this->writer->write("Necessary details: " . implode(", ", $module->getSetOfDetails()) . "\n");
+            }
         } catch (\Exception $e) {
             $this->writer->write($e->getMessage());
         }

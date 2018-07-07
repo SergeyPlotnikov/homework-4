@@ -1,5 +1,4 @@
 <?php
-
 namespace BinaryStudioAcademy\Game\Resources;
 
 abstract class Material
@@ -11,18 +10,27 @@ abstract class Material
     protected $title;
 
     /**
-     * Type or category of material
-     * @var string
+     * Is this resource combine?
+     * @var bool
      */
-    protected $type;
+    protected $isCombine = false;
+
+
     /**
      * short description of material
      * @var string
      */
     protected $description;
 
+
     /**
-     * @return mixed
+     * time for mining
+     * @var string
+     */
+    protected $timeForMining;
+
+    /**
+     * @return string
      */
     public function getTitle():string
     {
@@ -37,11 +45,20 @@ abstract class Material
         return $this->description;
     }
 
+
     /**
-     * @return string
+     * @return int
      */
-    public function getType(): string
+    public function getTimeForMining(): int
     {
-        return $this->type;
+        return $this->timeForMining;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isIsCombine(): bool
+    {
+        return $this->isCombine;
     }
 }
