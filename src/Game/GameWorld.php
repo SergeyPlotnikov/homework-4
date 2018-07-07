@@ -50,9 +50,10 @@ class GameWorld
     {
         $details = ['shell', 'porthole', 'IC', 'wires', 'engine', 'launcher', 'tank'];
         foreach ($details as $detail) {
-            $detail = '\BinaryStudioAcademy\Game\Details\\' . ucfirst($detail);
-            $objDetail = new $detail;
-            array_push($this->spaceshipDetails, $objDetail);
+            $detailName = '\BinaryStudioAcademy\Game\Details\\' . ucfirst($detail);
+            $objDetail = new $detailName;
+           // array_push($this->spaceshipDetails, $objDetail);
+            $this->spaceshipDetails[$detail] = $objDetail;
         }
         return;
     }

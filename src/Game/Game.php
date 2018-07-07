@@ -2,12 +2,30 @@
 
 namespace BinaryStudioAcademy\Game;
 
+use BinaryStudioAcademy\Game\Commands\AbstractCommand;
+
+
+use BinaryStudioAcademy\Game\Commands\ExitCommand;
+use BinaryStudioAcademy\Game\Commands\HelpCommand;
+use BinaryStudioAcademy\Game\Commands\SchemeCommand;
+use BinaryStudioAcademy\Game\Commands\StatusCommand;
 use BinaryStudioAcademy\Game\Contracts\Io\Reader;
 use BinaryStudioAcademy\Game\Contracts\Io\Writer;
-use BinaryStudioAcademy\Game\Details\Detail;
 
 class Game
 {
+
+    /**
+     * @var AbstractCommand $command
+     */
+    private $command;
+
+    private function setCommand(AbstractCommand $command):void
+    {
+        $this->command = $command;
+        return;
+    }
+
     public function start(Reader $reader, Writer $writer): void
     {
 
@@ -19,39 +37,23 @@ class Game
             $writer->write("Type the command:");
             $command = trim($reader->read());
             if ($command == 'help') {
-                $commands = Commands::getCommandsForHelp();
-                foreach ($commands as $command) {
-                    $writer->write("Command: ${command['command']} =>");
-                    $writer->write("\nDescription: ${command['description']}\n\n");
-                }
+                $this->setCommand(new HelpCommand($writer));
+                $this->command->process();
+
             }
             if ($command == 'exit') {
-                break;
+                $this->setCommand(new ExitCommand($writer));
+                $this->command->process();
             }
             if ($command == 'status') {
-                $writer->write("You have:\n");
-                foreach ($gameWorld->getAvailableResources() as $resource) {
-                    $writer->write("\t\u{25CF} " . $resource['resource']->getTitle() . ' - ' . $resource['count'] . " \n");
-                }
-                $writer->write("Parts ready:\n");
-                /**
-                 * @var Detail $spaceshipDetail
-                 */
-                foreach ($gameWorld->getSpaceshipDetails() as $spaceshipDetail) {
-                    if ($spaceshipDetail->isStatus()) {
-                        $writer->write("\t\u{25CF} " . $spaceshipDetail->getTitle() . " \n");
-                    }
-                }
-                $writer->write("Parts to build:\n");
-                /**
-                 * @var Detail $spaceshipDetail
-                 */
-                foreach ($gameWorld->getSpaceshipDetails() as $spaceshipDetail) {
-                    if ($spaceshipDetail->isStatus() == false) {
-                        $writer->write("\t\u{25CF} " . $spaceshipDetail->getTitle() . " \n");
-                    }
-                }
+                $this->setCommand(new StatusCommand($gameWorld, $writer));
+                $this->command->process();
             }
+            if (preg_match('#^scheme:(?<spaceship_module>.+)#', $command, $matches)) {
+                $this->setCommand(new SchemeCommand($gameWorld, $writer,$matches['spaceship_module']));
+                $this->command->process();
+            }
+           // if(preg_match())
         }
         return;
     }
