@@ -54,33 +54,97 @@ class Game
     {
         $writer->write("Let's test the game!\n");
         $gameWorld = GameWorld::getInstance();
+        $commandFactory = new CommandFactory($gameWorld, $writer);
+        $writer->write("\nType the command: ");
+        $command = trim($reader->read());
+        try {
+            $command = $commandFactory->createCommand($command);
+            $this->setCommand($command);
+            $this->command->process();
+        } catch (\Exception $exception) {
+            $writer->write($exception->getMessage());
+        }
 
-        $this->setCommand(new HelpCommand($writer));
-        $this->command->process();
+//        $writer->write("\nType the command status: ");
+//        $command = trim($reader->read());
+//        try {
+//            $command = $commandFactory->createCommand($command);
+//            $this->setCommand($command);
+//            $this->command->process();
+//        } catch (\Exception $exception) {
+//            $writer->write($exception->getMessage());
+//        }
+//
+//        $writer->write("\nType the command scheme:porthole: ");
+//        $command = trim($reader->read());
+//        try {
+//            $command = $commandFactory->createCommand($command);
+//            $this->setCommand($command);
+//            $this->command->process();
+//        } catch (\Exception $exception) {
+//            $writer->write($exception->getMessage());
+//        }
+//
+//        $writer->write("\nType the command mine:fuel: ");
+//        $command = trim($reader->read());
+//        try {
+//            $command = $commandFactory->createCommand($command);
+//            $this->setCommand($command);
+//            $this->command->process();
+//        } catch (\Exception $exception) {
+//            $writer->write($exception->getMessage());
+//        }
+//
+//        $writer->write("\nType the command produce:metal: ");
+//        $command = trim($reader->read());
+//        try {
+//            $command = $commandFactory->createCommand($command);
+//            $this->setCommand($command);
+//            $this->command->process();
+//        } catch (\Exception $exception) {
+//            $writer->write($exception->getMessage());
+//        }
+//
+//        $writer->write("\nType the command status: ");
+//        $command = trim($reader->read());
+//        try {
+//            $command = $commandFactory->createCommand($command);
+//            $this->setCommand($command);
+//            $this->command->process();
+//        } catch (\Exception $exception) {
+//            $writer->write($exception->getMessage());
+//        }
+//
+//        $writer->write("\nType the command build:shell:");
+//        $command = trim($reader->read());
+//        try {
+//            $command = $commandFactory->createCommand($command);
+//            $this->setCommand($command);
+//            $this->command->process();
+//        } catch (\Exception $exception) {
+//            $writer->write($exception->getMessage());
+//        }
+//
+//        $writer->write("\nType the command status: ");
+//        $command = trim($reader->read());
+//        try {
+//            $command = $commandFactory->createCommand($command);
+//            $this->setCommand($command);
+//            $this->command->process();
+//        } catch (\Exception $exception) {
+//            $writer->write($exception->getMessage());
+//        }
+//
+//        $writer->write("\nType the command exit: ");
+//        $command = trim($reader->read());
+//        try {
+//            $command = $commandFactory->createCommand($command);
+//            $this->setCommand($command);
+//            $this->command->process();
+//        } catch (\Exception $exception) {
+//            $writer->write($exception->getMessage());
+//        }
 
-        $this->setCommand(new StatusCommand($gameWorld, $writer));
-        $this->command->process();
-
-        $this->setCommand(new SchemeCommand($gameWorld, $writer, "porthole"));
-        $this->command->process();
-
-        $this->setCommand(new MineCommand($gameWorld, $writer, "fuel"));
-        $this->command->process();
-
-        $this->setCommand(new ProduceCommand($gameWorld, $writer, "metal"));
-        $this->command->process();
-
-        $this->setCommand(new StatusCommand($gameWorld, $writer));
-        $this->command->process();
-
-        $this->setCommand(new BuildCommand($gameWorld, $writer, "shell"));
-        $this->command->process();
-
-        $this->setCommand(new StatusCommand($gameWorld, $writer));
-        $this->command->process();
-
-        $this->setCommand(new ExitCommand($writer));
-        $this->command->process();
         return;
     }
 }

@@ -10,4 +10,6 @@ $game = new \BinaryStudioAcademy\Game\Game;
 
 $game->start($reader, $writer);
 
-//$game->run($reader, $writer);
+//while (true) {
+//    $game->run($reader, $writer);
+//}
