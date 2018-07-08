@@ -15,7 +15,7 @@ class GameWorld
     private function __construct()
     {
         //generate initial resources
-        $this->generateResources();
+       // $this->generateResources();
         $this->feelSpaceshipDetails();
     }
 
