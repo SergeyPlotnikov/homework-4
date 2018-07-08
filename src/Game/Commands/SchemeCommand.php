@@ -36,12 +36,12 @@ class SchemeCommand extends AbstractCommand
              * @var Detail $module
              */
             if (!$module->isCombineDetail()) {
-                $this->writer->write("Module name: " . $module->getTitle() . "\n");
-                $this->writer->write("Necessary resources: " . implode(", ", $module->getNecessaryResources()) . "\n");
+                $this->writer->write(ucfirst($module->getTitle()) . " => " .
+                    implode("|", $module->getNecessaryResources()) . "\n");
             } else {
                 $this->writer->write("Module name: " . $module->getTitle() . "\n");
                 $this->writer->write("It's a combined module.\n");
-                $this->writer->write("Necessary details: " . implode(", ", $module->getSetOfDetails()) . "\n");
+                $this->writer->write("Necessary details: " . implode("|", $module->getSetOfDetails()) . "\n");
             }
         } catch (\Exception $e) {
             $this->writer->write($e->getMessage());

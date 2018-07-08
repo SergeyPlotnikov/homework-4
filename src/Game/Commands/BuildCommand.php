@@ -33,7 +33,7 @@ class BuildCommand extends AbstractCommand
             throw new \Exception("There is no such spaceship module.\n");
         }
         if ($this->gameWorld->getSpaceshipDetails()[$this->moduleTitle]->isStatus()) {
-            throw new \Exception("Attention!" . $this->moduleTitle . " is ready.\n");
+            throw new \Exception("Attention! " . ucfirst($this->moduleTitle) . " is ready.\n");
         }
         return;
     }
@@ -67,7 +67,7 @@ class BuildCommand extends AbstractCommand
             $needResources = array_merge($needResources, $necessaryResources);
         }
         if (!$isEnough) {
-            throw new \Exception("Inventory should have: " . implode(", ", $needResources));
+            throw new \Exception("Inventory should have: " . implode(",", $needResources) . ".");
         }
         return;
 
@@ -108,11 +108,9 @@ class BuildCommand extends AbstractCommand
                 $this->gameWorld->getAvailableResources()[$resource]['count']--;
             }
             $this->moduleObj->setStatus(true);
-            $this->writer->write($this->moduleTitle . " is ready!\n");
         } else {
             //if it's combine module
-            echo $this->buildControlUnit();
-            $this->writer->write($this->moduleTitle . " is ready!\n");
+            $this->buildControlUnit();
         }
         return;
     }
@@ -122,8 +120,17 @@ class BuildCommand extends AbstractCommand
         try {
             $this->checkModule();
             $this->buildModule();
-            if ($this->moduleTitle != 'IC' && $this->moduleTitle != 'wires') {
+
+
+            if ($this->moduleTitle != 'ic' && $this->moduleTitle != 'wires') {
                 $this->gameWorld->setCountOfMainModules($this->gameWorld->getCountOfMainModules() - 1);
+            }
+            if ($this->gameWorld->getCountOfMainModules() == 0) {
+                $this->writer->write(ucfirst($this->moduleTitle) . " is ready! => You won!\n");
+                //if we ended out game => remove game's world
+                $this->gameWorld->removeGameWorld();
+            } else {
+                $this->writer->write(ucfirst($this->moduleTitle) . " is ready!\n");
             }
         } catch (\Exception $exception) {
             $this->writer->write($exception->getMessage());

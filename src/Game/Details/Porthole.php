@@ -5,7 +5,7 @@ class Porthole extends Detail
 {
     public function __construct()
     {
-        $this->necessaryResources = ['fire', 'sand'];
+        $this->necessaryResources = ['sand', 'fire'];
         $this->title = 'porthole';
     }
 

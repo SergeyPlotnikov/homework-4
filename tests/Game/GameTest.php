@@ -61,8 +61,15 @@ class GameTest extends TestCase
             ['mine:iron', 'Iron added to inventory.'],
             ['produce:metal', 'Metal added to inventory.'],
             ['build:tank', 'Tank is ready! => You won!'],
+//            ['build:tank', 'Attention! Tank is ready.'],
             ['scheme:tank', 'Tank => metal|fuel'],
-            ['scheme:unknown', 'There is no such spaceship module.']
+            ['scheme:unknown', 'There is no such spaceship module.'],
+            ['build:shell', "Inventory should have: metal,fire."],
+            ['produce:metal', 'You need to mine: iron,fire.'],
+            ['mine:iron', 'Iron added to inventory.'],
+            ['produce:metal', 'You need to mine: fire.'],
+            ['mine:fire', 'Fire added to inventory.'],
+            ['produce:metal', 'Metal added to inventory.']
         ];
     }
 
@@ -73,9 +80,9 @@ class GameTest extends TestCase
         // We're testing internal state here so loop is required.
 
         foreach ($this->commandsResponse() as [$command, $expected]) {
-            $gameTester->run($command);
+        $gameTester->run($command);
 
-            $this->assertContains($expected, $gameTester->getOutput());
-        }
+        $this->assertContains($expected, $gameTester->getOutput());
+    }
     }
 }

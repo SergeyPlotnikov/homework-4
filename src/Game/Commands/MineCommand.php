@@ -41,7 +41,7 @@ class MineCommand extends AbstractCommand
             $this->gameWorld->getAvailableResources()[$this->resourceTitle]['count'] = 1;
         }
 //        sleep($this->gameWorld->getAvailableResources()[$this->resourceTitle]['resource']->getTimeForMining());
-        $this->writer->write($this->resourceTitle . " added to inventory.\n");
+        $this->writer->write(ucfirst($this->resourceTitle) . " added to inventory.\n");
         return;
     }
 

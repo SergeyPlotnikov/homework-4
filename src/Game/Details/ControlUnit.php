@@ -3,7 +3,7 @@ namespace BinaryStudioAcademy\Game\Details;
 
 class ControlUnit extends Detail
 {
-    private $setOfDetails = ['IC', 'wires'];
+    private $setOfDetails = ['ic', 'wires'];
 
     public function __construct()
     {

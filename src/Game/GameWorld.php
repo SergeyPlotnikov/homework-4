@@ -8,14 +8,14 @@ class GameWorld
     private static $instance;
     private $availableResources = [];
     private $spaceshipDetails = [];
-    private $details = ['shell', 'porthole', 'control_unit', 'engine', 'launcher', 'tank', 'IC', 'wires'];
+    private $details = ['shell', 'porthole', 'control_unit', 'engine', 'launcher', 'tank', 'ic', 'wires'];
 
     private $countOfMainModules = 6;
 
     private function __construct()
     {
         //generate initial resources
-       // $this->generateResources();
+        $this->generateResources();
         $this->feelSpaceshipDetails();
     }
 
@@ -37,22 +37,12 @@ class GameWorld
 
     private function generateResources():void
     {
-        //generate 20 random resources
         $resources = ['iron', 'fire', 'sand', 'silicon', 'copper', 'carbon', 'water', 'fuel'];
-        $minValue = 0;
-        $maxValue = count($resources) - 1;
-        $count = 200;
-        $num = 0;
-        while ($num < $count) {
-            $value = random_int($minValue, $maxValue);
-            $resource = '\BinaryStudioAcademy\Game\Resources\\' . ucfirst($resources[$value]);
-            $resourceObj = new $resource;
-            if (!array_key_exists($resources[$value], $this->availableResources)) {
-                $this->availableResources[$resources[$value]]['resource'] = $resourceObj;
-                $this->availableResources[$resources[$value]]['count'] = 0;
-            }
-            $this->availableResources[$resources[$value]]['count']++;
-            $num++;
+        foreach ($resources as $resource) {
+            $resourceName = '\BinaryStudioAcademy\Game\Resources\\' . ucfirst($resource);
+            $resourceObj = new $resourceName;
+            $this->availableResources[$resource]['resource'] = $resourceObj;
+            $this->availableResources[$resource]['count'] = 0;
         }
         return;
     }
@@ -68,6 +58,8 @@ class GameWorld
                 }, preg_split('#_#', $detail));
                 $detailName = implode("", $detailParts);
                 $detailName = '\BinaryStudioAcademy\Game\Details\\' . ucfirst($detailName);
+            } elseif ($detail == 'ic') {
+                $detailName = '\BinaryStudioAcademy\Game\Details\\' . strtoupper($detail);
             } else {
                 $detailName = '\BinaryStudioAcademy\Game\Details\\' . ucfirst($detail);
             }
@@ -76,6 +68,11 @@ class GameWorld
             $this->spaceshipDetails[$detail] = $objDetail;
         }
         return;
+    }
+
+    public function removeGameWorld():void
+    {
+        self::$instance = null;
     }
 
     /**

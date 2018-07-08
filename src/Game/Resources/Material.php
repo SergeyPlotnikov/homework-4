@@ -23,11 +23,6 @@ abstract class Material
     protected $description;
 
 
-    /**
-     * time for mining
-     * @var string
-     */
-    protected $timeForMining;
 
     /**
      * @return string
@@ -45,14 +40,6 @@ abstract class Material
         return $this->description;
     }
 
-
-    /**
-     * @return int
-     */
-    public function getTimeForMining(): int
-    {
-        return $this->timeForMining;
-    }
 
     /**
      * @return boolean

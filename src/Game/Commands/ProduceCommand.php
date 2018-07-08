@@ -39,7 +39,7 @@ class ProduceCommand extends AbstractCommand
             }
             $this->gameWorld->getAvailableResources()['iron']['count']--;
             $this->gameWorld->getAvailableResources()['fire']['count']--;
-            sleep($this->gameWorld->getAvailableResources()[$this->resourceTitle]['resource']->getTimeForMining());
+//            sleep($this->gameWorld->getAvailableResources()[$this->resourceTitle]['resource']->getTimeForMining());
             $this->writer->write("Metal added to inventory.\n");
         }
         return;
